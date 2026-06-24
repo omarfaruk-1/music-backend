@@ -132,7 +132,10 @@ You can use the provided `.env.example` file as a reference.
 
 | Method | Endpoint | Description |
 |----------|----------|-------------|
-| POST | /api/music/upload | Upload a music file |
+| POST | /api/music | Upload a music file |
+| GET | /api/music | Get all music |
+| GET | /api/music/my-music | Artist own music |
+| GET | /api/music/:musicId | Specif music |
 
 ### Album
 

@@ -15,20 +15,26 @@ authRoute.post("/register",authController.register);
 authRoute.post("/login",authController.login);
 
 /**
- * getMe : localhost:/5000/api/auth/get-me
+ * getMe : localhost:/5000/api/auth/me
  */
-authRoute.get("/get-me",authMiddleware,authController.getMe);
+authRoute.get("/me",authMiddleware,authController.getMe);
 
+/**
+ * refreshToken:localhost:/5000/api/auth/refresh-token
+ */
+authRoute.get("/refresh-token",authMiddleware,authController.rotatedToken)
 
 /**
  * log-out user:localhost:/5000/api/auth/logout
  */
-authRoute.get("/log-out",authController.logOut);
+authRoute.get("/logout",authController.logOut);
 
 /**
  * log-out-all : localhost:/5000/api/auth/log-out-all
  */
 authRoute.get("/log-out-all",authController.logOutAll)
+
+
 
 
 
