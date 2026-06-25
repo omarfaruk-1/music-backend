@@ -14,7 +14,9 @@ const musicRoute = Router();
 musicRoute.post("/",authMiddleware,authorize,uploadMusic,musicController.createMusic);
 musicRoute.get("/",authMiddleware,musicController.getAllMusic)
 musicRoute.get("/my-music",authMiddleware,authorize,musicController.getArtistMusic);
-musicRoute.get("/:musicId",authMiddleware,musicController.getMusicById)
+musicRoute.get("/:musicId",authMiddleware,musicController.getMusicById);
+musicRoute.patch("/:musicId",authMiddleware,authorize,musicController.updateMusic);
+musicRoute.delete("/:musicId",authMiddleware,authorize,musicController.deleteMusic)
 
 
 

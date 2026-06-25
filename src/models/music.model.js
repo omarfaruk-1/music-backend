@@ -10,6 +10,14 @@ const musicSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    description:{
+        type:String,
+        required:true
+    },
+    genre:{
+        type:String,
+        required:true
+    },
     artist:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"users",
