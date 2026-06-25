@@ -1,5 +1,3 @@
-import jwt from "jsonwebtoken";
-import appConfig from "../configs/appConfig.js";
 import uploadFile from "../services/storage.service.js";
 import musicModel from "../models/music.model.js";
 
@@ -7,9 +5,8 @@ async function createMusic(req, res) {
   try {
     const { title,description,genre, } = req.body;
     const file = req.file;
-    if(!file || !title || !description || !genre ) return res.status(400).json({message:"All field  required"});
+    if(!file || !title || !description || !genre ) return res.status(400).json({message:"All fields required"});
     
-
     const result = await uploadFile(file.buffer.toString("base64"));
 
     const music = await musicModel.create({
@@ -29,19 +26,17 @@ async function createMusic(req, res) {
         description:music.description,
         genre:music.genre,
         url: music.uri,
-      },
+      }
     });
-  } catch (error) {
-    console.error(error);
 
+  } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"+ error.message,
+      message: "Internal server error: "+ error.message,
     });
   }
 }
 
 async function getAllMusic(req,res){
-
   try {
     const music = await musicModel.find();
     if(music.length===0) return res.status(404).json({message:"Music not found"});
@@ -92,8 +87,6 @@ async function getArtistMusic(req,res){
   } catch (error) {
     return res.status(500).json({message:"Internal server error: "+error.message})
   }
-  
-  
 }
 
 async function updateMusic(req,res){
@@ -103,6 +96,7 @@ async function updateMusic(req,res){
 
     const music = await musicModel.findById(musicId);
     if(!music) return res.status(404).json({message:"Music not found"});
+
     if(music.artist.toString()!==req.user._id.toString()){
       return res.status(403).json({message:"Forbidden"})
     }
@@ -117,7 +111,14 @@ async function updateMusic(req,res){
 
     res.status(200).json({
       message:"Music update successfully",
-      music
+      music:{
+        musicId:music._id,
+        title:music.title,
+        description:music.description,
+        genre:music.genre,
+        uri:music.uri,
+        artist:music.artist
+      }
     })
   } catch (error) {
     return res.status(500).json({message:"Internal server error: "+error.message})
@@ -140,7 +141,5 @@ async function deleteMusic(req,res){
   }
   
 }
-
-
 
 export default {createMusic,getAllMusic,getMusicById,getArtistMusic,deleteMusic,updateMusic};

@@ -1,7 +1,6 @@
 import imageKit from "@imagekit/nodejs";
 import appConfig from "../configs/appConfig.js";
 
-
 const ImageKitClient = new imageKit({
     privateKey:appConfig.IMAGE_KIT_PRIVATE_KEY,
     publicKey:appConfig.IMAGE_KIT_PUBLIC_KEY,
@@ -14,7 +13,6 @@ async function uploadFile(file){
         fileName:"music_"+ Date.now(),
         folder:"sportzfy/music"
     })
-
     return result;
 }
 
