@@ -1,8 +1,8 @@
 import {Router} from "express";
-import musicController from "../controllers/music.controller.js"
-import uploadMusic from "../midllewares/upload.midlleware.js";
-import authMiddleware from "../midllewares/auth.middleware.js";
-import authorize  from "../midllewares/authorization.midlleware.js";
+import musicController from "../controllers/music.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
+import authorize from "../middlewares/authorization.middleware.js";
+import uploadFile from "../services/storage.service.js";
 
 
 /**
@@ -11,7 +11,7 @@ import authorize  from "../midllewares/authorization.midlleware.js";
 
 const musicRoute = Router();
 
-musicRoute.post("/",authMiddleware,authorize,uploadMusic,musicController.createMusic);
+musicRoute.post("/",authMiddleware,authorize,uploadFile,musicController.createMusic);
 musicRoute.get("/",authMiddleware,musicController.getAllMusic)
 musicRoute.get("/my-music",authMiddleware,authorize,musicController.getArtistMusic);
 musicRoute.get("/:musicId",authMiddleware,musicController.getMusicById);
