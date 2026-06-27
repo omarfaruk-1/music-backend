@@ -6,13 +6,16 @@ const albumSchema= new mongoose.Schema({
         type:String,
         required:true,
     },
-    musics:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"musics",
-        required:true
-    }],
+    musics:{
+        type:[{
+            type: mongoose.Schema.Types.ObjectId,
+            ref:"musics"
+        }],
+        default:[]
+    },
     artist:{
         type: mongoose.Schema.Types.ObjectId,
+        ref:"users",
         required:true
     }
 })

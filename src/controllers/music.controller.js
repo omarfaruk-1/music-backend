@@ -3,7 +3,7 @@ import musicModel from "../models/music.model.js";
 
 async function createMusic(req, res) {
   try {
-    const { title,description,genre, } = req.body;
+    const { title,description,genre} = req.body;
     const file = req.file;
     if(!file || !title || !description || !genre ) return res.status(400).json({message:"All fields required"});
     
