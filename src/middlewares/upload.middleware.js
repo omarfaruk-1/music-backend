@@ -5,5 +5,5 @@ const upload= multer({
 })
 
 const uploadMusic = upload.single("music")
-export default uploadMusic;
-
+const uploadCoverImage = upload.single("coverImage")
+export { uploadMusic, uploadCoverImage };

@@ -2,7 +2,7 @@ import {Router} from "express";
 import musicController from "../controllers/music.controller.js";
 import authMiddleware from "../middlewares/auth.middleware.js";
 import authorize from "../middlewares/authorization.middleware.js";
-import uploadMusic from "../middlewares/upload.middleware.js";
+import {uploadMusic} from "../middlewares/upload.middleware.js";
 
 
 

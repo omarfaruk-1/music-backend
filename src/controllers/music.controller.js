@@ -1,5 +1,6 @@
-import uploadFile from "../services/storage.service.js";
+
 import musicModel from "../models/music.model.js";
+import storageService from "../services/storage.service.js";
 
 async function createMusic(req, res) {
   try {
@@ -7,7 +8,8 @@ async function createMusic(req, res) {
     const file = req.file;
     if(!file || !title || !description || !genre ) return res.status(400).json({message:"All fields required"});
     
-    const result = await uploadFile(file.buffer.toString("base64"));
+    const result = await storageService.uploadFile (file.buffer.toString("base64"));
+    if(!result) return res.status(400).json({message:"File upload failed"});
 
     const music = await musicModel.create({
       uri: result.url,

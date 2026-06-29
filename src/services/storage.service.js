@@ -15,5 +15,13 @@ async function uploadFile(file){
     })
     return result;
 }
+async function uploadCoverImage(file){
+    const result = await ImageKitClient.files.upload({
+        file,
+        fileName:"cover_"+ Date.now(),
+        folder:"sportzfy/cover"
+    })
+    return result;
+}
 
-export default uploadFile;
+export default {uploadFile, uploadCoverImage};
