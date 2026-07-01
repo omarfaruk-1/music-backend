@@ -13,9 +13,9 @@ async function createMusic(req, res) {
 
     const music = await musicModel.create({
       uri: result.url,
-      title: title,
+      title: title.toLowerCase(),
       description:description,
-      genre:genre,
+      genre:genre.toLowerCase(),
       artist: req.user._id,
     });
 
@@ -40,9 +40,18 @@ async function createMusic(req, res) {
 
 async function getAllMusic(req,res){
   try {
-    const music = await musicModel.find();
-    if(music.length===0) return res.status(404).json({message:"Music not found"});
-
+    const {title,genre,artist,album,page,limit}=req.query;
+    const query={};
+    if(title){query.title={$regex:title,$options:"i"}};
+    if(genre){query.genre=genre};
+    if(artist){query.artist=artist};
+    if(album){query.album=album};
+    const pageNumber=Number(page)||1;
+    const limitNumber = Number(limit)||5;
+    
+    const skip=(pageNumber-1)*limitNumber;
+    const music = await musicModel.find(query).skip(skip).limit(limitNumber);
+    if(music.length===0) return res.status(200).json({message:"Music not found"});
     res.status(200).json({
       message:"All music fetched successfully",
       count:music.length,
@@ -105,7 +114,11 @@ async function updateMusic(req,res){
 
     allowedUpdates.forEach((field)=>{
       if(req.body[field] !== undefined){
-        music[field]=req.body[field];
+        if(field==="title"||field==="genre"){
+          music[field]=req.body[field].toLowerCase();
+        }else{
+          music[field]=req.body[field];
+        }
       }
     })
 

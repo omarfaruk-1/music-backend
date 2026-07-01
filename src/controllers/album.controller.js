@@ -8,7 +8,7 @@ async function createAlbum(req,res){
         if(!title) return res.status(400).json({message:"Title is required"});
         
         const album= await albumModel.create({
-            title:title,
+            title:title.toLowerCase(),
             artist:req.user._id,
         })
 
@@ -85,7 +85,7 @@ async function updateAlbumTitle(req,res){
         if(req.user._id.toString()!== album.artist.toString()){
             return res.status(403).json({message:"You can not update other artist album"})
         }
-        album.title=title;
+        album.title=title.toLowerCase();
         await album.save();
         res.status(200).json({
             message:"Album title update successfully",

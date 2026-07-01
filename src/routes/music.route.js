@@ -13,7 +13,7 @@ import {uploadMusic} from "../middlewares/upload.middleware.js";
 const musicRoute = Router();
 
 musicRoute.post("/",authMiddleware,authorize,uploadMusic,musicController.createMusic);
-musicRoute.get("/",authMiddleware,musicController.getAllMusic)
+musicRoute.get("/",authMiddleware,musicController.getAllMusic);
 musicRoute.get("/my-music",authMiddleware,authorize,musicController.getArtistMusic);
 musicRoute.get("/:musicId",authMiddleware,musicController.getMusicById);
 musicRoute.patch("/:musicId",authMiddleware,authorize,musicController.updateMusic);
