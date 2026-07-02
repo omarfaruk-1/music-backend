@@ -37,6 +37,7 @@ async function createPlayList(req,res){
         res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 async function addMusicToPlaylist(req,res){
     try{
         const {playlistId,musicId}=req.params;
@@ -63,6 +64,7 @@ async function addMusicToPlaylist(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 async function getMyPlaylists(req,res){
     try{
         const playlists= await playlistModel.find({user:req.user._id}).populate("musics");
@@ -79,6 +81,7 @@ async function getMyPlaylists(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 async function getAllPlaylists(req,res){
     try{
         const playlists= await playlistModel.find({isPublic:true}).populate("musics");
@@ -93,6 +96,7 @@ async function getAllPlaylists(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 async function getPlaylistById(req,res){
     try{
         const {playlistId}=req.params;  
@@ -111,14 +115,19 @@ async function getPlaylistById(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }   
 }
+
 async function updatePlaylist(req,res){
     try{
         const {playlistId}=req.params;
         const {title, description,isPublic} = req.body;
         const coverImage=req.file;
-        const allowedUpdates=["title","description","coverImage","isPublic"];
-        // const playlist = await playlistModel.findByIdAndUpdate(playlistId, {name, description, coverImage, isPublic}, {new: true});
+        const allowedUpdates=["title","description","isPublic"];
+
         const playlist = await playlistModel.findById(playlistId);
+        if(coverImage){
+            const result = await storageService.uploadCoverImage(coverImage.buffer("base64"));
+            playlist.coverImage=coverImage;
+        }
         if(!playlist){
             return res.status(404).json({message:"Playlist not found"});
         }
@@ -140,6 +149,7 @@ async function updatePlaylist(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 async function deletePlaylist(req,res){
     try{
         const {playlistId}=req.params;  
@@ -150,7 +160,7 @@ async function deletePlaylist(req,res){
         if(playlist.user.toString()!==req.user._id.toString()){
             return res.status(403).json({message:"You are not authorized to delete this playlist"});
         }
-        await playlist.remove();
+        await playlist.deleteOne();
         res.status(200).json({
             message:"Playlist deleted successfully"
         })
@@ -158,4 +168,5 @@ async function deletePlaylist(req,res){
         return res.status(500).json({message:"Internal server error: "+error.message});
     }
 }
+
 export default {  createPlayList, addMusicToPlaylist, getMyPlaylists, getAllPlaylists, getPlaylistById, updatePlaylist, deletePlaylist } 

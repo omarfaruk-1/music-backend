@@ -6,31 +6,31 @@ import { uploadCoverImage } from "../middlewares/upload.middleware.js";
 const playListRoute = Router();
 
 /**
- * create a new playlist: localhost:5000/api/playlist
+ * create a new playlist: localhost:5000/api/playlists
  */
 playListRoute.post("/",authMiddleware,uploadCoverImage,playlistController.createPlayList);
 /**
- * add music to playlist: localhost:5000/api/playlist/:playlistId/:musicId
+ * add music to playlist: localhost:5000/api/playlists/:playlistId/:musicId
  */
 playListRoute.post("/:playlistId/:musicId",authMiddleware,playlistController.addMusicToPlaylist);
 /**
- * get all playlists: localhost:5000/api/playlist
+ * get all playlists: localhost:5000/api/playlists
  */
 playListRoute.get("/my",authMiddleware,playlistController.getMyPlaylists);
 /**
- * get all public playlists: localhost:5000/api/playlist/public
+ * get all public playlists: localhost:5000/api/playlists/public
  */
 playListRoute.get("/",authMiddleware,playlistController.getAllPlaylists);  
 /**
- * get playlist by id: localhost:5000/api/playlist/:playlistId
+ * get playlist by id: localhost:5000/api/playlists/:playlistId
  */
 playListRoute.get("/:playlistId",authMiddleware,playlistController.getPlaylistById);  
 /**
- * update playlist: localhost:5000/api/playlist/:playlistId
+ * update playlist: localhost:5000/api/playlists/:playlistId
  */
 playListRoute.put("/:playlistId",authMiddleware,uploadCoverImage,playlistController.updatePlaylist);
 /**
- * delete playlist: localhost:5000/api/playlist/:playlistId
+ * delete playlist: localhost:5000/api/playlists/:playlistId
  */
 playListRoute.delete("/:playlistId",authMiddleware,playlistController.deletePlaylist);
 

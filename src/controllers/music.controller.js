@@ -1,5 +1,7 @@
 
+import historyModel from "../models/history.model.js";
 import musicModel from "../models/music.model.js";
+import userModel from "../models/user.model.js"
 import storageService from "../services/storage.service.js";
 
 async function createMusic(req, res) {
@@ -40,25 +42,73 @@ async function createMusic(req, res) {
 
 async function getAllMusic(req,res){
   try {
-    const {title,genre,artist,album,page,limit}=req.query;
+    const {title,genre,username,album,page,limit,sort}=req.query;
     const query={};
     if(title){query.title={$regex:title,$options:"i"}};
     if(genre){query.genre=genre};
-    if(artist){query.artist=artist};
+
+    let sortOption ={createdAt:-1}
+    if(sort==="latest"){sortOption={createdAt:-1}}
+    if(sort==="oldest"){sortOption={createdAt:1}}
+    if(sort==="az"){sortOption={title:1}}
+    if(sort==="za"){sortOption={title:-1}}
+
+    if(username){
+      const artist = await userModel.findOne({username});
+      if(artist){
+        query.artist=artist._id;
+      }else{
+        return res.status(404).json({message:"No artist found"});
+      }
+    };
     if(album){query.album=album};
     const pageNumber=Number(page)||1;
     const limitNumber = Number(limit)||5;
     
     const skip=(pageNumber-1)*limitNumber;
-    const music = await musicModel.find(query).skip(skip).limit(limitNumber);
-    if(music.length===0) return res.status(200).json({message:"Music not found"});
+    const music = await musicModel.find(query).sort(sortOption).skip(skip).limit(limitNumber);
+    const totalMusic = await musicModel.countDocuments(query)
+    if(music.length===0) return res.status(200).json({
+      message:"Music not found",
+      music: [],
+      count: 0
+    });
     res.status(200).json({
       message:"All music fetched successfully",
       count:music.length,
+      currentPage:pageNumber,
+      limit:limitNumber,
+      totalMusic:totalMusic,
+      totalPage:Math.ceil(totalMusic/limitNumber),
       music
     })
   } catch (error) {
     return res.status(500).json({message:"Internal server error: "+error.message})
+  }
+}
+
+async function playMusic(req,res){
+  try {
+    const {musicId}=req.params;
+    const music = await musicModel.findByIdAndUpdate(musicId,{$inc:{playCount:1}},{ returnDocument: "after" })
+    if(!music) return res.status(404).json({ message: "Music not found" });
+
+    const histories= await historyModel.findOne({user:req.user._id,music:musicId});
+    if(histories){
+      await histories.updateOne({})
+    }else{
+      await historyModel.create({
+        user:req.user._id,
+        music:musicId
+      })
+    }
+
+    res.status(200).json({
+      message:"Music playCount update",
+      playCount:music.playCount
+    })
+  } catch (error) {
+    res.status(500).json({message: error.message});
   }
 }
 
@@ -157,4 +207,4 @@ async function deleteMusic(req,res){
   
 }
 
-export default {createMusic,getAllMusic,getMusicById,getArtistMusic,deleteMusic,updateMusic};
+export default {createMusic,getAllMusic,getMusicById,getArtistMusic,deleteMusic,updateMusic,playMusic};
